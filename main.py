@@ -20,8 +20,8 @@ keyboard_five = telebot.types.ReplyKeyboardMarkup(True)
 keyboard_five.row('Есть гражданство РФ', 'Нет гражданства РФ')
 
 keyboard_six = telebot.types.ReplyKeyboardMarkup(True)
-keyboard_six.row('Я живу в Казани', 'Я живу в другом городе')
-
+keyboard_six.row('Казань', 'РТ')
+keyboard_six.row('Нет, я из другого региона')
 
 # my_id = 1107191282
 
@@ -40,17 +40,23 @@ def send_welcome(message):
     
     Пройдите короткий опрос.⤵️
               
-    Являетесь ли вы руководителем 
-    или индивидуальным предпринимателям?
+    Являетесь ли вы зарегистрированным руководителем 
+    или индивидуальным предпринимателям сейчас или
+    за последние 3 года?
            """
     bot.send_message(message.chat.id, info, reply_markup=keyboard_one)
 
 
 @bot.message_handler(content_types=['text'])
 def main(message):
-    if message.text == 'Да я предприниматель':
+    if message.text == 'Не Являюсь таковым':
         bot.send_message(message.chat.id, 'Хорошо! Ваш возраст от 21 до 45 ?',
                          reply_markup=keyboard_two)
+    elif message.text == 'Да я предприниматель':
+        del_k = telebot.types.ReplyKeyboardRemove()
+        bot.send_message(message.chat.id, 'К сожалению вы нам не подходите, но вы можете порекомендовать знакомым и '
+                                          'неплохо на этом заработать '
+                                          '\nЧтобы начать сначала введите  /start', reply_markup=del_k)
     elif message.text == 'Мне уже есть 21 год':
         bot.send_message(message.chat.id, 'Имеется ли у вас судимость в том числе непогашенная?',
                          reply_markup=keyboard_three)
@@ -72,20 +78,26 @@ def main(message):
         bot.send_message(message.chat.id, 'Вы гражданин РФ?',
                          reply_markup=keyboard_five)
     elif message.text == 'Есть гражданство РФ':
-        bot.send_message(message.chat.id, 'Место жительства город Казань?',
+        bot.send_message(message.chat.id, 'Место жительства город Казань или РТ?',
                          reply_markup=keyboard_six)
-    elif message.text == 'Я живу в Казани':
+    elif message.text == 'Нет, я из другого региона':
+        del_l = telebot.types.ReplyKeyboardRemove()
+        bot.send_message(message.chat.id, 'К сожалению вы нам не подходите, но вы можете порекомендовать знакомым и '
+                                      'неплохо на этом заработать '
+                                      '\nЧтобы начать сначала введите  /start', reply_markup=del_l)
+    elif message.text == 'Казань' or 'РТ':
+
         del_key = telebot.types.ReplyKeyboardRemove()
         bot.send_message(message.chat.id, 'Отлично! Вы нам подходите!🎉🎉🎉 \n\nОставьте свой номер телефона '
-                                          '(через +7), а так же ваше Имя🎫📫📝\n'
-                                          'Или можете позвонить нам сами для получения '
-                                          'остальной информации\n\n'
-                                          '+7 950 314 85 15',
+                                          '(через +7), а так же ваше Имя🎫📫📝\n\n''Мы с вами свяжемся в кратчайшее '
+                                          'время!!!',
                          reply_markup=del_key)
+
+
     elif not 'Мне больше 45 лет' and '+7' or '+' in message.text:
         with open('контакты.txt', 'a', encoding='utf-8') as text_file:
             text_file.writelines(message.text + '\n')
-        bot.send_message(message.chat.id, 'Ваши контакты отправлены!')
+        bot.send_message(message.chat.id, 'Ваши контакты отправлены! Ждите нашего звонка.')
     else:
         del_kyb = telebot.types.ReplyKeyboardRemove()
         bot.send_message(message.chat.id, 'К сожалению вы нам не подходите, но вы можете порекомендовать знакомым и '
@@ -94,6 +106,7 @@ def main(message):
 
 
 while True:
+    print('Я Работаю')
     try:
         bot.polling(none_stop=True)
     except Exception as e:
