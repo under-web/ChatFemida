@@ -23,6 +23,7 @@ keyboard_six = telebot.types.ReplyKeyboardMarkup(True)
 keyboard_six.row('Казань', 'РТ')
 keyboard_six.row('Нет, я из другого региона')
 
+
 # my_id = 1107191282
 
 @bot.message_handler(commands=['start', 'help'])
@@ -83,9 +84,16 @@ def main(message):
     elif message.text == 'Нет, я из другого региона':
         del_l = telebot.types.ReplyKeyboardRemove()
         bot.send_message(message.chat.id, 'К сожалению вы нам не подходите, но вы можете порекомендовать знакомым и '
-                                      'неплохо на этом заработать '
-                                      '\nЧтобы начать сначала введите  /start', reply_markup=del_l)
-    elif message.text == 'Казань' or 'РТ':
+                                          'неплохо на этом заработать '
+                                          '\nЧтобы начать сначала введите  /start', reply_markup=del_l)
+    elif message.text == 'Казань':
+
+        del_key = telebot.types.ReplyKeyboardRemove()
+        bot.send_message(message.chat.id, 'Отлично! Вы нам подходите!🎉🎉🎉 \n\nОставьте свой номер телефона '
+                                          '(через +7), а так же ваше Имя🎫📫📝\n\n''Мы с вами свяжемся в кратчайшее '
+                                          'время!!!',
+                         reply_markup=del_key)
+    elif message.text == 'РТ':
 
         del_key = telebot.types.ReplyKeyboardRemove()
         bot.send_message(message.chat.id, 'Отлично! Вы нам подходите!🎉🎉🎉 \n\nОставьте свой номер телефона '
@@ -93,11 +101,10 @@ def main(message):
                                           'время!!!',
                          reply_markup=del_key)
 
-
-    elif not 'Мне больше 45 лет' and '+7' or '+' in message.text:
+    elif '7' and '+' in message.text.strip():
         with open('контакты.txt', 'a', encoding='utf-8') as text_file:
             text_file.writelines(message.text + '\n')
-        bot.send_message(message.chat.id, 'Ваши контакты отправлены! Ждите нашего звонка.')
+        bot.send_message(message.chat.id, 'Отлично! Будьте на связи!👍📞💲')
     else:
         del_kyb = telebot.types.ReplyKeyboardRemove()
         bot.send_message(message.chat.id, 'К сожалению вы нам не подходите, но вы можете порекомендовать знакомым и '
@@ -109,6 +116,10 @@ while True:
     print('Я Работаю')
     try:
         bot.polling(none_stop=True)
+
+    except telebot.apihelper.ApiException:
+        print('Проверьте связь и API')
+        time.sleep(10)
     except Exception as e:
         print(e)
         time.sleep(10)
