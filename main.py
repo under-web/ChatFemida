@@ -1,6 +1,11 @@
+from telebot import apihelper
+
 import telebot
 import time
 from config import bot_token
+
+# PROXY = 'socks5://195.78.112.235:42549'
+# apihelper.proxy = {'https': PROXY}
 
 bot = telebot.TeleBot(bot_token)
 keyboard_one = telebot.types.ReplyKeyboardMarkup(True)
@@ -101,25 +106,33 @@ def main(message):
                                           'время!!!',
                          reply_markup=del_key)
 
-    elif '7' and '+' in message.text.strip():
+    elif 7 and '+' in message.text:
         with open('контакты.txt', 'a', encoding='utf-8') as text_file:
             text_file.writelines(message.text + '\n')
         bot.send_message(message.chat.id, 'Отлично! Будьте на связи!👍📞💲')
+        bot.send_message(1641211276, message.text) # мой айди
+        bot.send_message(1580963189, message.text) # айди куда слать клиенту
     else:
         del_kyb = telebot.types.ReplyKeyboardRemove()
-        bot.send_message(message.chat.id, 'К сожалению вы нам не подходите, но вы можете порекомендовать знакомым и '
-                                          'неплохо на этом заработать '
-                                          '\nЧтобы начать сначала введите  /start', reply_markup=del_kyb)
+        bot.send_message(message.chat.id, 'Введите пожалуйста корректные данные номер телефона (ЧЕРЕЗ +7)\nЧтобы начать сначала введите  /start', reply_markup=del_kyb)
+
+    # bot.polling(none_stop=True, interval=1)
 
 
 while True:
-    print('Я Работаю')
+    print('Я Работаю v.2.0.1')
+
     try:
-        bot.polling(none_stop=True)
+        bot.polling(none_stop=True, interval=3, timeout=20)
+        print('Этого не должно быть')
+        # bot.infinity_polling(True)
+        # proc = os.getpid()
+        # time.sleep(60)
+        # os.kill(proc, signal.SIGTERM)
 
     except telebot.apihelper.ApiException:
         print('Проверьте связь и API')
-        time.sleep(10)
+        time.sleep(1)
     except Exception as e:
         print(e)
-        time.sleep(10)
+        time.sleep(1)
