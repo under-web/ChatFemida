@@ -1,5 +1,3 @@
-from telebot import apihelper
-
 import telebot
 import time
 from config import bot_token
@@ -126,10 +124,6 @@ while True:
         bot.polling(none_stop=True, interval=3, timeout=20)
         print('Этого не должно быть')
         # bot.infinity_polling(True)
-        # proc = os.getpid()
-        # time.sleep(60)
-        # os.kill(proc, signal.SIGTERM)
-
     except telebot.apihelper.ApiException:
         print('Проверьте связь и API')
         time.sleep(1)
